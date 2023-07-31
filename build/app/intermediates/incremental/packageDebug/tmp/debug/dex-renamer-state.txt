@@ -1,0 +1,4 @@
+#Mon Jul 31 12:25:01 EEST 2023
+base.0=/home/aya/Desktop/pathosapp/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
