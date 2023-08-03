@@ -1,125 +1,214 @@
 import 'package:flutter/material.dart';
+import 'package:pathos/HomePage.dart';
+import 'package:pathos/UserSelectionPage.dart';
+import 'package:pathos/provider.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+        providers: [ChangeNotifierProvider(create: (_) => homeController())],
+        child: MaterialApp(
+          home: HomePage(),
+          debugShowCheckedModeBanner: false,
+        )),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a blue toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.deepPurple),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const PinCodeScreen(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+class PinCodeScreen extends StatefulWidget {
+  const PinCodeScreen({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _PinCodeScreenState createState() => _PinCodeScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _PinCodeScreenState extends State<PinCodeScreen> {
+  TextEditingController pinEditingController = TextEditingController();
+  bool isTapped = false;
 
-  void _incrementCounter() {
+  void onNumberTap(String number) {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      if (number == "0" && pinEditingController.text.isEmpty) {
+        return;
+      }
+
+      pinEditingController.text += number;
+      isTapped = true;
+      Future.delayed(const Duration(milliseconds: 200), () {
+        setState(() {
+          isTapped = false;
+        });
+      });
+
+      if (pinEditingController.text.length == 5) {
+        onPinEntered(pinEditingController.text);
+      }
     });
+  }
+
+  void onPinEntered(String pin) {
+    if (pin == "12345") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+    } else {
+      print("Incorrect pin");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFFADD7CD),
+              Color(0xFFA3BEBC),
+              Color(0xFF4D8793),
+              Color(0xFF7F7E8C)
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        padding: const EdgeInsets.all(100),
+        child: Center(
+          child: Column(
+            children: [
+              const Text(
+                'pathos',
+                style: TextStyle(
+                  fontSize: 80,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 7, 52, 90),
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              const Text(
+                'Enter Pin',
+                style: TextStyle(fontSize: 40, color: Colors.white),
+              ),
+              const SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (int i = 0; i < 5; i++)
+                    SizedBox(
+                        width: 50,
+                        child: PinCodeCircle(
+                            isFilled: i < pinEditingController.text.length))
+                ],
+              ),
+              const SizedBox(height: 50),
+              SizedBox(
+                width: 300,
+                height: 300,
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 40,
+                    mainAxisSpacing: 40,
+                  ),
+                  itemCount: 9,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return CircleNumberTile(
+                      number: (index + 1).toString(),
+                      onTap: onNumberTap,
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 30),
+              SizedBox(
+                width: 80,
+                height: 80,
+                child: CircleNumberTile(number: "0", onTap: onNumberTap),
+              ),
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class PinCodeCircle extends StatelessWidget {
+  final bool isFilled;
+
+  const PinCodeCircle({Key? key, required this.isFilled}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 24,
+      height: 24,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: isFilled ? Colors.white : Colors.transparent,
+        border: Border.all(color: Colors.white, width: 2),
+      ),
+    );
+  }
+}
+
+class CircleNumberTile extends StatelessWidget {
+  final String number;
+  final Function(String) onTap;
+
+  const CircleNumberTile({Key? key, required this.number, required this.onTap})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        onTap(number);
+        print('Tapped number: $number');
+      },
+      child: Container(
+        width: 24,
+        height: 24,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 2),
+          gradient: const RadialGradient(
+            colors: [Colors.transparent, Color(0x0092ACB0)],
+            center: Alignment(0, 0),
+            focal: Alignment(0, 0),
+            focalRadius: 1.5,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            number,
+            style: const TextStyle(color: Colors.white, fontSize: 40),
+          ),
+        ),
+      ),
     );
   }
 }
