@@ -4,14 +4,21 @@ import 'package:pathos/UserSelectionPage.dart';
 import 'package:pathos/provider.dart';
 import 'package:provider/provider.dart';
 
+import 'TablesScreen.dart';
+
 void main() {
   runApp(
     MultiProvider(
-        providers: [ChangeNotifierProvider(create: (_) => homeController())],
-        child: MaterialApp(
-          home: HomePage(),
-          debugShowCheckedModeBanner: false,
-        )),
+      providers: [
+        ChangeNotifierProvider(create: (_) => homeController()),
+        ChangeNotifierProvider(create: (_) => tableController()),
+    
+      ],
+      child: MaterialApp(
+        home: MyApp(),
+        debugShowCheckedModeBanner: false,
+      ),
+    ),
   );
 }
 
@@ -91,7 +98,7 @@ class _PinCodeScreenState extends State<PinCodeScreen> {
             end: Alignment.bottomCenter,
           ),
         ),
-        padding: const EdgeInsets.all(100),
+        padding: const EdgeInsets.fromLTRB(100, 100, 100, 0),
         child: Center(
           child: Column(
             children: [
@@ -108,7 +115,7 @@ class _PinCodeScreenState extends State<PinCodeScreen> {
               ),
               const Text(
                 'Enter Pin',
-                style: TextStyle(fontSize: 40, color: Colors.white),
+                style: TextStyle(fontSize: 35, color: Colors.white),
               ),
               const SizedBox(height: 30),
               Row(
@@ -116,12 +123,12 @@ class _PinCodeScreenState extends State<PinCodeScreen> {
                 children: [
                   for (int i = 0; i < 5; i++)
                     SizedBox(
-                        width: 50,
+                        width: 40,
                         child: PinCodeCircle(
                             isFilled: i < pinEditingController.text.length))
                 ],
               ),
-              const SizedBox(height: 50),
+              const SizedBox(height: 10),
               SizedBox(
                 width: 300,
                 height: 300,
@@ -129,7 +136,7 @@ class _PinCodeScreenState extends State<PinCodeScreen> {
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
                     crossAxisSpacing: 40,
-                    mainAxisSpacing: 40,
+                    mainAxisSpacing: 30,
                   ),
                   itemCount: 9,
                   shrinkWrap: true,
@@ -144,8 +151,8 @@ class _PinCodeScreenState extends State<PinCodeScreen> {
               ),
               const SizedBox(height: 30),
               SizedBox(
-                width: 80,
-                height: 80,
+                width: 75,
+                height: 75,
                 child: CircleNumberTile(number: "0", onTap: onNumberTap),
               ),
             ],
@@ -190,8 +197,8 @@ class CircleNumberTile extends StatelessWidget {
         print('Tapped number: $number');
       },
       child: Container(
-        width: 24,
-        height: 24,
+        width: 20,
+        height: 20,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(color: Colors.white, width: 2),
